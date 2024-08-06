@@ -18,5 +18,4 @@
 
 - gin (Webフレームワーク)
 - gorm (ORM)
-- gorilla/mux (ルーター)
 - MySQL (データベース)
