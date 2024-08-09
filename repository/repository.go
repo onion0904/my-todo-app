@@ -1,17 +1,44 @@
 package repository
 
 import (
-    "gorm.io/driver/mysql"
+    _"gorm.io/driver/mysql"
     "gorm.io/gorm"
 	"TodoApp/models"
-
 )
 
-func Create (db *gorm.DB, model Todo) error {
-	db.Create(&model)
+type TodoRepository struct {
+	db *gorm.DB
 }
 
-func Read (db *gorm.DB, model Todo, id int) error {
-	result := db.First(&user, id)
+func NewTodoRepository(db *gorm.DB) *TodoRepository {
+    return &TodoRepository{db: db}
+}
 
+func (repo TodoRepository) Add (model *models.Todo) error {
+	if err := repo.db.Create(model).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo TodoRepository) List () []models.Todo {
+	todos := []models.Todo{}
+	if err := repo.db.Select("Text").Find(&todos).Error; err != nil {
+		panic(err)
+	}
+	return todos
+}
+
+func (repo TodoRepository) Update (newTodo *models.Todo) error {
+	if err := repo.db.Model(&models.Todo{}).Where("id = ?", newTodo.ID).Updates(newTodo).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo TodoRepository) Delete (id int) error {
+	if err := repo.db.Delete(&models.Todo{}).Error; err != nil {
+		return err
+	}
+	return nil
 }

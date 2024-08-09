@@ -1,8 +1,10 @@
-package repository
+package models
+
+import "gorm.io/gorm"
 
 type Todo struct {
     gorm.Model
     Name  string
-    text string 
+    Text string 
     TimeLimit int
 }
