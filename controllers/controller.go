@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 	"strconv"
 	"net/http"
+	"log"
 )
 
 type TodoController struct {
@@ -60,12 +61,14 @@ func (con TodoController) Update(c *gin.Context) {
 }
 
 func (con TodoController) Delete(c *gin.Context) {
-	id := c.PostForm("ID")
-    intId, err := strconv.Atoi(id)
+	id := c.Query("id")
+	intId, err := strconv.Atoi(id)
     if err != nil {
-        c.String(http.StatusBadRequest, "Bad request: invalid ID")
-        return
-    }
+		log.Printf("Error converting ID to integer: %v", err)
+		c.String(http.StatusBadRequest, "Bad request: invalid ID")
+		return
+	}
+	
 	repo := repository.NewTodoRepository(con.db)
 	err = repo.Delete(intId)
 	if err!= nil {
