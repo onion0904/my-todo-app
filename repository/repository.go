@@ -23,7 +23,7 @@ func (repo TodoRepository) Add (model *models.Todo) error {
 
 func (repo TodoRepository) List () []models.Todo {
 	todos := []models.Todo{}
-	if err := repo.db.Select("ID","Text").Find(&todos).Error; err != nil {
+	if err := repo.db.Select("ID","Text","Name","TimeLimit").Find(&todos).Error; err != nil {
 		panic(err)
 	}
 	return todos

@@ -1,6 +1,7 @@
 package main
 
 import(
+	"github.com/gin-contrib/cors"
 	"fmt"
 	"github.com/gin-gonic/gin"
     "gorm.io/driver/mysql"
@@ -10,6 +11,7 @@ import(
 	"TodoApp/models"
 	"TodoApp/controllers"
 	"github.com/joho/godotenv"
+	"time"
 )
 
 func main() {
@@ -41,6 +43,25 @@ func main() {
 		method.PUT("/update",con.Update)
 		method.DELETE("/delete",con.Delete)
 	}
+
+	Todo.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"http://localhost:3000"},
+        AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+        AllowHeaders:     []string{
+			"Access-Control-Allow-Credentials",
+			"Access-Control-Allow-Headers",
+			"Content-Type",
+			"Content-Length",
+			"Accept-Encoding",
+			"Authorization",
+		},
+        ExposeHeaders:    []string{"Content-Length"},
+        AllowCredentials: true,
+        AllowOriginFunc: func(origin string) bool {
+            return origin == "http://localhost:3000"
+        },
+        MaxAge: 12 * time.Hour,
+    }))
 
     Todo.Run(":8080")
 }
